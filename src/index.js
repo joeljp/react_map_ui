@@ -65,8 +65,8 @@ export default class App extends React.Component {
 		    );
 		}
 		if(d.type == "interval" && d.nulls){
-		    console.log("HEY!");
-		    Sets.add_set(d.key,"null");
+//		    console.log("HEY!");
+		    Sets.add_set(d.key,null);
 		}
 	    }
 	);
@@ -128,7 +128,7 @@ function Menu(props){
 		    />
 		);
 		comps.push(
-		    <div className="nulls">
+		    <div className="nulls" key={k+"_null_div"}>
 			<Checkbox
 			    key={k+"_null"}
 			    label={"null"}
