@@ -1,17 +1,59 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import React from "react";
+import ReactDOM from "react-dom";
 
-ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
+import $ from 'jquery';
+import {Sets} from './sets.js';
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+
+import Map from "./Map";
+//import "./styles.css";
+
+//import { makeStyles } from "@material-ui/core/styles";
+
+import coords from "./coords.json";
+import meta from "./meta.json";
+
+const API_KEY = "AIzaSyCeGVnQFiyEzY0bOKoaLt-GZxjdztiG8gc";
+
+const center = {
+    lat: 64.92379165427583,
+    lng: 16.706251160048125
+};
+
+export default class App extends React.Component {
+  constructor(props) {
+//    let tri = [{ lat: 64.5, lng: 15.3},{ lat: 62.4, lng: 13.3 },{ lat: 62.5, lng: 15.4 } ];
+    super(props);
+    this.state = {
+      paths: []
+    };
+  }
+
+  render() {
+    const { paths } = this.state;
+    const c = [];
+    Sets.initSuperSet(meta);
+    let locs = Object.keys(Sets.SuperSet["place"]);
+      $.each(locs, function(j,loc){
+	  c.push({id: loc, lat: coords[loc][0],lng: coords[loc][1]});
+      });  
+    return (
+      <div>
+        <Map
+            apiKey={API_KEY}
+            center={center}
+            paths={paths}
+            point={paths => this.setState({ paths })}
+	    coords={c}
+	    zoom={4.7}
+        />
+        })}
+      </div>
+    );
+  }
+}
+
+//export default withStyles(useStyles)(App);
+const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+//https://stackoverflow.com/questions/59627596/react-js-delete-point-from-the-path-update-the-polygon
