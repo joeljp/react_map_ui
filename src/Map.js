@@ -46,7 +46,9 @@ const polygonContains = (polygon,coords) => {
 	    coords[j],
             polygon
 	);
-	if(contains){markers.push(coords[j].id);}
+	if(contains){
+	    markers.push(coords[j].id);
+	}
     }
     return markers;
 }
@@ -73,12 +75,14 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
 	}
     }
 }
-export default function Map({ apiKey, center, paths = [], point, coords, zoom }) {
+//export default function Map({ apiKey, center, paths = [], point, coords, zoom }) {
+export default function Map({ apiKey, center, callback, coords, zoom }) {
     // Define refs for Polygon instance and listeners
     let enveloped = [];
     let polyid = 0;
     const polyHash = useRef({});
-    const [path, setPath] = useState();
+    const markerA = useRef([]);
+//    const [path, setPath] = useState();
     const [state, setState] = useState({
 	drawingMode: "polygon"
     });
@@ -86,7 +90,11 @@ export default function Map({ apiKey, center, paths = [], point, coords, zoom })
     useEffect(() => {
 	setPath(paths);
     }, [paths]);
-*/  
+*/
+
+    const updateMarkers = React.useCallback(
+	
+    );
     const onPolygonComplete = React.useCallback(
 	function onPolygonComplete(poly) {
 	    const path = poly.getPath();
@@ -95,31 +103,27 @@ export default function Map({ apiKey, center, paths = [], point, coords, zoom })
 		poly.setMap(null);
 		delete polyHash.current[poly.id];
 		enveloped = polygonsContain(polyHash.current,coords);
-		console.log(enveloped);		
+		callback(enveloped);
 	    });
 //	    poly.addListener("drag", function(){
 //		console.log(".");
 //	    });
 	    path.addListener("set_at", function(){
-		console.clear();
 		enveloped = polygonsContain(polyHash.current,coords);
-		console.log(enveloped);
+		callback(enveloped);
 	    });
 	    path.addListener("remove_at", function(){
 		enveloped = polygonsContain(polyHash.current,coords);
-		console.log(enveloped);
+		callback(enveloped);
 	    });
 	    path.addListener("insert_at", function(){
 		enveloped = polygonsContain(polyHash.current,coords);
-		console.log(enveloped);
+		callback(enveloped);
 	    });
-//	    console.clear();
-//	    console.log(polyHash);
-//	    console.log("added "+poly.id);
 	    polyHash.current[polyid.toString()] = poly;
 	    polyid++;
 	    enveloped = polygonsContain(polyHash.current,coords);
-	    console.log(enveloped);
+	    callback(enveloped);
 	    return;
 	},
     );

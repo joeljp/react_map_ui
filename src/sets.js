@@ -53,7 +53,9 @@ export class Sets {
     }
     // updates the k values in activeSets {sex: {…}, agegroup: {…}, age: {…}}, in the range l - r, but checks each value is actually present in SuperSet
     static interval_add_set(k,l,r){
+	let nullval = this.activeSets[k]["null"]
 	this.activeSets[k] = {} // IE, this is going to be reset, so needs to be purged
+	if(nullval){this.add_set(k,"null")}
 	var i;
 	for(i = l; i <= r; i++){
 	    if(i in this.SuperSet[k]){
@@ -66,6 +68,7 @@ export class Sets {
     static add_set(k,v){
 	if(!(k in this.activeSets)){this.activeSets[k] = {}}
 	this.activeSets[k][v] = true;
+	return true;
     }
 
     static rem_set(k,e){
