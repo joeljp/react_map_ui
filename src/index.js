@@ -7,8 +7,7 @@ import "./layout.css";
 import $ from 'jquery';
 import {Sets} from './sets.js';
 
-import MultiRangeSlider from "./multiRangeSlider";
-
+import Menu from "./Menu";
 import Map from "./Map";
 import config from "./config.js";
 
@@ -30,7 +29,7 @@ export default class App extends React.Component {
 	    menu_data: initMenuData(Sets.SuperSet)
 	};
     }
-    mapCallback = (d) =>{
+    mapCallback = (d) => {
 	console.clear();
 	console.log(d);
 	Sets.remove_active_set("place");
@@ -40,21 +39,19 @@ export default class App extends React.Component {
 	    }
 	);
     }
-    intervalCallback = (d) =>{
-//	console.clear();
+    intervalCallback = (d) => {
 	Sets.interval_add_set(d[0],d[1],d[2]);
-//	console.log(Sets.activeSets[d[0]]);
     }
-    discreteCallback = (d) =>{
-//	console.clear();
-//	console.log(d.cat,d.val);
+    discreteCallback = (d) => {
 	d.checked ? Sets.add_set(d.cat,d.val) : Sets.rem_set(d.cat,d.val);
-//	console.log(Sets.activeSets);
     }
-    handleClick(){alert("Menu calling!");}
+    
     render() {
 	const { paths } = this.state;
 	const c = [];
+	Sets.initActiveSets(this.state.menu_data);
+//	initActiveSets(this.state.menu_data);
+/*
 	this.state.menu_data.forEach(
 	    function(d){
 		if(d.type == "discrete"){
@@ -65,16 +62,15 @@ export default class App extends React.Component {
 		    );
 		}
 		if(d.type == "interval" && d.nulls){
-//		    console.log("HEY!");
 		    Sets.add_set(d.key,null);
 		}
 	    }
 	);
-	console.log(Sets.activeSets);
+*/
+//	console.log(Sets.activeSets);
 	$.each(this.state.locs, function(j,loc){
 	    c.push({id: loc, lat: coords[loc][0],lng: coords[loc][1]});
 	});
-	//	console.log(Sets.activeSets);
 	return (
 	    <div id="grid">
 		<div className="head" id="head">
@@ -85,7 +81,6 @@ export default class App extends React.Component {
 		<div className="inner-grid">
 		    <Menu
 			meta={this.state.menu_data}
-			onClick={() => this.handleClick()}
 			interval={(d)=> this.intervalCallback(d)} 
 			discrete={(d) => this.discreteCallback(d)}
 		    />
@@ -101,86 +96,30 @@ export default class App extends React.Component {
 	);
     }
 }
-const Checkbox = (props) => {
-    return (
-	<label>
-	    {props.label}
-	    <input type="checkbox" defaultChecked onChange={props.onChange}/>
-	</label>
-    );
-};
 
-function Menu(props){
-    let comps = [];
-    props.meta.forEach(
-	function(e){
-	    if(e.type == "interval"){
-		let k = e.key;
-		let min = e.val.min;
-		let max = e.val.max;
-		comps.push(
-		    <MultiRangeSlider
-			cat={k}
-			key={k}
-			min={min}
-			max={max}
-			onChange={({ min, max }) => props.interval([k,min,max])}
-		    />
-		);
-		comps.push(
-		    <div className="nulls" key={k+"_null_div"}>
-			<Checkbox
-			    key={k+"_null"}
-			    label={"null"}
-			    onChange={(e) => props.discrete({cat: k,val: null,checked: e.target.checked})}
-			/>
-		    </div>);
-		return;
-	    }
-	    let checks = [];
-	    let k = e.key;
-	    e.val.forEach(
-		function(i){
-		    checks.push(
-			<Checkbox
-			    key={k+"_"+i}
-			    label={i}
-			    onChange={(e) => props.discrete({cat: k,val: i,checked: e.target.checked})}
-			/>
-		    );
-		}
-	    );
-	    comps.push(
-		<div key={k+"_title"} className="slider__cat">
-		    {k}
-		</div>
-	    );
-	    comps.push(
-		    <div key={k+"_checks"} className="container">
-			{checks}
-		    </div>
-	    );
-	});
-    return (
-	comps
-    );
-}
-
-
-
-/*
-function update(){
-    let locations = new Set;
-    let tids = Sets.select_tids();
-    tids.forEach(function(e){
-	locations.add(Sets.tid2loc[e]);
-    });
-    $("#n_tids").html(tids.size);
-    $("#n_locs").html(locations.size);
-    updateMarkers(locations);
-}
-*/
 /* Some auxfuns */
+
+function initActiveSets(data){
+    console.log(data);
+    data.forEach(
+	function(d){
+	    if(d.type == "discrete"){
+		d.val.forEach(
+		    function(v){
+			Sets.add_set(d.key,v);
+		    }
+		);
+	    }
+	    if(d.type == "interval"){
+		console.log(d);
+		if(d.nulls){
+		    Sets.add_set(d.key,null);
+		}
+		Sets.interval_add_set(d.key,d.val.min,d.val.max);
+	    }
+	}
+    );
+}
 
 function initMenuData(meta){
     // meta = cat -> val -> Set of tids
