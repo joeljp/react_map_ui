@@ -1,18 +1,17 @@
-import $ from 'jquery';
-
-function union(sets){ // Just simply adds iteratively
+function union(sets){
     let u = new Set();
-    $.each(sets, function(i, set){
-	u = new Set([...u, ...set]); 
-    });
+    for(const [i, set] of Object.entries(sets)){
+	u = new Set([...u, ...set]);
+    }
     return u;
 }
 function intersection(sets){ // uses the spread operator (...), iteratively
     let inter = false;
-    $.each(sets, function(k,v){
+    for(const [k,v] of Object.entries(sets)){
 	if(!inter){inter = v}
+	console.log(inter);
 	inter = new Set([...inter].filter(x => v.has(x)))
-    });
+    }
     if(!inter){return new Set();}
     return inter;
 }

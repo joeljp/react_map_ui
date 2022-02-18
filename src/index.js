@@ -50,24 +50,6 @@ export default class App extends React.Component {
 	const { paths } = this.state;
 	const c = [];
 	Sets.initActiveSets(this.state.menu_data);
-//	initActiveSets(this.state.menu_data);
-/*
-	this.state.menu_data.forEach(
-	    function(d){
-		if(d.type == "discrete"){
-		    d.val.forEach(
-			function(v){
-			    Sets.add_set(d.key,v);
-			}
-		    );
-		}
-		if(d.type == "interval" && d.nulls){
-		    Sets.add_set(d.key,null);
-		}
-	    }
-	);
-*/
-//	console.log(Sets.activeSets);
 	$.each(this.state.locs, function(j,loc){
 	    c.push({id: loc, lat: coords[loc][0],lng: coords[loc][1]});
 	});
@@ -99,7 +81,7 @@ export default class App extends React.Component {
 
 /* Some auxfuns */
 
-function initActiveSets(data){
+function initActiveSets(data){ // No longer in use
     console.log(data);
     data.forEach(
 	function(d){
