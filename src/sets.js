@@ -9,7 +9,6 @@ function intersection(sets){ // uses the spread operator (...), iteratively
     let inter = false;
     for(const [k,v] of Object.entries(sets)){
 	if(!inter){inter = v}
-	console.log(inter);
 	inter = new Set([...inter].filter(x => v.has(x)))
     }
     if(!inter){return new Set();}

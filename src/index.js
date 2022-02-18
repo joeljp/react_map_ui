@@ -4,7 +4,6 @@ import ReactDOM from "react-dom";
 
 import "./layout.css";
 
-import $ from 'jquery';
 import {Sets} from './sets.js';
 
 import Menu from "./Menu";
@@ -50,9 +49,10 @@ export default class App extends React.Component {
 	const { paths } = this.state;
 	const c = [];
 	Sets.initActiveSets(this.state.menu_data);
-	$.each(this.state.locs, function(j,loc){
+	for(let j = 0; j < this.state.locs.length; j++){
+	    let loc = this.state.locs[j];
 	    c.push({id: loc, lat: coords[loc][0],lng: coords[loc][1]});
-	});
+	}
 	return (
 	    <div id="grid">
 		<div className="head" id="head">
