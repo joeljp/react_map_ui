@@ -30,7 +30,7 @@ export default class App extends React.Component {
     }
     mapCallback = (d) => {
 	console.clear();
-	console.log(d);
+	console.log(d.length);
 	Sets.remove_active_set("place");
 	d.forEach(
 	    function(e){
@@ -51,13 +51,16 @@ export default class App extends React.Component {
 	Sets.initActiveSets(this.state.menu_data);
 	for(let j = 0; j < this.state.locs.length; j++){
 	    let loc = this.state.locs[j];
-	    c.push({id: loc, lat: coords[loc][0],lng: coords[loc][1]});
+	    c.push({id: loc, visibility: true, selected: true, coords:{id: loc, lat: coords[loc][0],lng: coords[loc][1]}});
 	}
 	return (
 	    <div id="grid">
 		<div className="head" id="head">
 		    <button onClick={() => console.log(Sets.select_tids())}>
 			{"tids"}
+		    </button>
+		    <button onClick={() => console.log(Sets.select_tids())}>
+			{"tods"}
 		    </button>
 		</div>
 		<div className="inner-grid">
