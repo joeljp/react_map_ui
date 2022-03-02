@@ -17,6 +17,7 @@ const API_KEY = config.API_KEY;
 const center = config.CENTER;
 const zoom = config.ZOOM;
 
+// This is a static class
 Sets.initSuperSet(meta);
 
 
