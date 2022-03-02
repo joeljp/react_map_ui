@@ -18,7 +18,8 @@ function difference(a,b){
     a.filter(x => !b.includes(x));
 }
 export class Sets {
-    static activeSets = {};
+    
+//    static activeSets = {};
     static tid2loc = {};
     static SuperSet = {}; // SuperSet is a hash of hashes, where the innerhashes are key/set pairs. The sets are simply tids, on which set operations can be performed.
 
@@ -50,37 +51,34 @@ export class Sets {
 	}
     }
     // updates the k values in activeSets {sex: {…}, agegroup: {…}, age: {…}}, in the range l - r, but checks each value is actually present in SuperSet
-    static interval_add_set(k,l,r){
-	let nullval = this.activeSets[k][null]
-	this.activeSets[k] = {} // IE, this is going to be reset, so needs to be purged
-	if(nullval){this.add_set(k,null)}
+
+    static interval_add_set(k,l,r, activeSets = {}){
+	let nullval = activeSets[k][null]
+	activeSets[k] = {} // IE, this is going to be reset, so needs to be purged
+	if(nullval){activeSets = this.add_set(k,null, activeSets)}
 	var i;
 	for(i = l; i <= r; i++){
 	    if(i in this.SuperSet[k]){
-		this.add_set(k,i);
+		activeSets = this.add_set(k,i,activeSets);
 	    }
 	}
-	return true;
+	return activeSets;
+    }
+    static add_set(k,v,s){
+	if(!(k in s)){s[k] = {}}
+	s[k][v] = true;
+	return s;
     }
 
-    static add_set(k,v){
-	if(!(k in this.activeSets)){this.activeSets[k] = {}}
-	this.activeSets[k][v] = true;
-	return true;
-    }
 
-    static rem_set(k,e){
-	if(!this.activeSets){return false;} // THIS SHOULDN'T OCCUR
-	delete this.activeSets[k][e];
-	if(Object.keys(this.activeSets[k]).length == 0){
-	    // the following was commented out to facilitate …
-	    //	  delete this.activeSets[k]; // otherwise, we'll end up calculating the intersection of this empty set with another
-	}
+    static rem_set(k,e,activeSets){
+	delete activeSets[k][e];
+	return activeSets;
     }
-
-    static select_tids(){ // IMPORTANT! WITHIN SAME CAT, UNION; BETWEEN, INTERSECTION
+ // IMPORTANT! WITHIN SAME CAT, UNION; BETWEEN, INTERSECTION
+    static select_tids(activeSets){
 	let sets = [];
-	for (const [k, v] of Object.entries(this.activeSets)){
+	for (const [k, v] of Object.entries(activeSets)){
 	    let set = [];
 	    let keys = Object.keys(v);
 	    for (const [i, w] of Object.entries(keys)){
@@ -92,25 +90,27 @@ export class Sets {
 	return intersection(sets); // AGAIN!! Could be empty set!
     }
 
-    static remove_active_set(k){
-	delete this.activeSets[k];
+    static remove_active_set(k, activeSets){
+	delete activeSets[k];
+	return activeSets;
     }
 
-    static initActiveSets(data){
+    static initActiveSets(data, activeSets = {}){
 	for(const [i,v] of Object.entries(data)){
 	    if(v.type == "discrete"){
 		for(const [j,w] of Object.entries(v.val)){
-		    this.add_set(v.key, w);
+		    activeSets = this.add_set(v.key, w, activeSets);
 		}
 	    }
 	    if(v.type == "interval"){
 		if(v.nulls){
-		    this.add_set(v.key,null);
+		    activeSets = this.add_set(v.key,null, activeSets);
 		}
-		this.interval_add_set(v.key,v.val.min,v.val.max);
+		activeSets = this.interval_add_set(v.key,v.val.min,v.val.max, activeSets);
 	    }
 	    
 	}
+	return activeSets;
     }
     
 }

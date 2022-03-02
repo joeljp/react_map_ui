@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React from "react";
 import ReactDOM from "react-dom";
 
 import MultiRangeSlider from "./multiRangeSlider";
@@ -11,6 +11,7 @@ const Checkbox = (props) => {
 	</label>
     );
 };
+
 export default function Menu(props){
     let comps = [];
     props.meta.forEach(

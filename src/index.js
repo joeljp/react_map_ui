@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useState, useRef} from "react";
 import ReactDOM from "react-dom";
 
 
@@ -17,69 +17,121 @@ const API_KEY = config.API_KEY;
 const center = config.CENTER;
 const zoom = config.ZOOM;
 
-export default class App extends React.Component {
-    constructor(props) {
-	Sets.initSuperSet(meta);
-	super(props);
-	this.state = {
-	    paths: [],
-	    tids: [],
-	    locs: Object.keys(Sets.SuperSet["place"]),
-	    menu_data: initMenuData(Sets.SuperSet)
-	};
-    }
-    mapCallback = (d) => {
+Sets.initSuperSet(meta);
+
+
+export default function App(){
+    const locs = Object.keys(Sets.SuperSet["place"]);
+    const menu_data = initMenuData(Sets.SuperSet);
+    const markers = locs.map(function(loc){
+	return {id: loc, polyselected: true, selected: true, coords:{id: loc, lat: coords[loc][0],lng: coords[loc][1]}}});
+    let a = Sets.initActiveSets([{type: 'discrete', key: 'place', val: locs}]);
+    a = Sets.initActiveSets(menu_data, a);
+    const [activeSets, aUpdate] = useState(a);
+    const [c, cUpdate] = useState(markers);
+    const updatePlaces = () =>{
+	let locs = [...Sets.select_tids(activeSets)].map(e => Sets.tid2loc[e]);
+	locs = [...new Set(locs)];
 	console.clear();
-	console.log(d.length);
-	Sets.remove_active_set("place");
+	console.log(locs);
+	for(const [i,v] of Object.entries(c)){
+	    if(!locs.includes(v.id)){
+		v.selected = false;
+		continue;
+	    }
+	    v.selected = true;
+	}
+	cUpdate([...c.values()]);
+    };
+
+    const mapCallback = (d) => {
+	aUpdate(Sets.remove_active_set("place", activeSets));
 	d.forEach(
 	    function(e){
-		Sets.add_set("place", e);
+		aUpdate(Sets.add_set("place", e, activeSets));
 	    }
 	);
-    }
-    intervalCallback = (d) => {
-	Sets.interval_add_set(d[0],d[1],d[2]);
-    }
-    discreteCallback = (d) => {
-	d.checked ? Sets.add_set(d.cat,d.val) : Sets.rem_set(d.cat,d.val);
-    }
-    
-    render() {
-	const { paths } = this.state;
-	const c = [];
-	Sets.initActiveSets(this.state.menu_data);
-	for(let j = 0; j < this.state.locs.length; j++){
-	    let loc = this.state.locs[j];
-	    c.push({id: loc, visibility: true, selected: true, coords:{id: loc, lat: coords[loc][0],lng: coords[loc][1]}});
+	for(const [k,v] of Object.entries(c)){
+	    if(!d.includes(v.id)){
+		c[k].polyselected = false;
+//		coords[k].visibility = false;
+	    }
+	    else{
+		c[k].polyselected = true
+//		coords[k].visibility = true;
+	    }
 	}
-	return (
+	cUpdate([...c.values()]);
+    };
+    const markerCallback = (d) =>{
+	for(const [k,v] of Object.entries(c)){
+	    if(!d.includes(v.id)){
+		c[k].polyselected = false;
+//		coords[k].visibility = false;
+	    }
+	    else{
+		c[k].polyselected = true
+//		coords[k].visibility = true;
+	    }
+	}
+	console.log(d);
+	cUpdate([...c.values()]);
+    };
+    const intervalCallback = (d) => {
+	aUpdate(Sets.interval_add_set(d[0],d[1],d[2], activeSets));
+	updatePlaces();
+    };
+    const discreteCallback = (d) => {
+	d.checked ? aUpdate(Sets.add_set(d.cat,d.val,activeSets)) : aUpdate(Sets.rem_set(d.cat,d.val, activeSets));
+	updatePlaces();
+    };
+    
+    return (
 	    <div id="grid">
 		<div className="head" id="head">
-		    <button onClick={() => console.log(Sets.select_tids())}>
+		    <button onClick={() => console.log(Sets.select_tids(activeSets))}>
 			{"tids"}
 		    </button>
-		    <button onClick={() => console.log(Sets.select_tids())}>
-			{"tods"}
+		    <button onClick={() => console.log(activeSets)}>
+			{"meta"}
+		    </button>
+		    <button onClick={() => console.log(activeSets["place"])}>
+			{"locs"}
 		    </button>
 		</div>
 		<div className="inner-grid">
 		    <Menu
-			meta={this.state.menu_data}
-			interval={(d)=> this.intervalCallback(d)} 
-			discrete={(d) => this.discreteCallback(d)}
+			meta={menu_data}
+			interval={(d) => intervalCallback(d)} 
+			discrete={(d) => discreteCallback(d)}
 		    />
 		</div>
+		{/*gmap(API_KEY,center,mapCallback,c,zoom, deselected)*/}
+		{
+// moved to function because it seems to re-render too much 	
 		<Map
 		    apiKey={API_KEY}
 		    center={center}
-		    callback={(d) => this.mapCallback(d)}
+		    callback={(d) => mapCallback(d)}
+//		    mCallback={(d) => markerCallback(d)}
 		    coords={c}
 		    zoom={zoom}
 		/>
+		 }
 	    </div>
 	);
-    }
+}
+function gmap(k,m,f,c,z,d){
+    return(
+	<Map
+	    apiKey={k}
+	    center={m}
+	    callback={(d) => f(d)}
+	    coords={c}
+	    zoom={z}
+//	    desel={d}
+	/>
+    );
 }
 
 /* Some auxfuns */
