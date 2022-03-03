@@ -5,7 +5,7 @@ function union(sets){
     }
     return u;
 }
-function intersection(sets){ // uses the spread operator (...), iteratively
+function intersection(sets){
     let inter = false;
     for(const [k,v] of Object.entries(sets)){
 	if(!inter){inter = v}
@@ -18,8 +18,9 @@ function difference(a,b){
     a.filter(x => !b.includes(x));
 }
 export class Sets {
-    
-//    static activeSets = {};
+
+    // activeSets hash taken out and static methods made functional
+
     static tid2loc = {};
     static SuperSet = {}; // SuperSet is a hash of hashes, where the innerhashes are key/set pairs. The sets are simply tids, on which set operations can be performed.
 
@@ -34,8 +35,6 @@ export class Sets {
 	for (const [k, v] of Object.entries(meta.slice(1,meta.length))) {
 	    let tid = v[0];
 	    for (const [i, e] of Object.entries(v)){
-		//		if(e !== null & i != 0 & e != 0){
-		// have tentatively removed the null bit because we need to access these values, perhaps
 		if(i != 0 & e != 0){
 		    let key = column_names[i];
 		    if(key == "place"){this.tid2loc[tid] = e}
@@ -45,7 +44,6 @@ export class Sets {
 		    this.SuperSet[key][e].add(tid);
 		}
 		else{
-//		    if(i != 0){console.log(column_names[i],e)}
 		}
 	    }
 	}
@@ -64,10 +62,10 @@ export class Sets {
 	}
 	return activeSets;
     }
-    static add_set(k,v,s){
-	if(!(k in s)){s[k] = {}}
-	s[k][v] = true;
-	return s;
+    static add_set(k,v,activeSets){
+	if(!(k in activeSets)){activeSets[k] = {}}
+	activeSets[k][v] = true;
+	return activeSets;
     }
 
 

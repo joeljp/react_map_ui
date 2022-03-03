@@ -77,7 +77,7 @@ class LoadScriptOnlyIfNeeded extends LoadScript {
 	}
     }
 }
-export default function Map({ apiKey, center, callback, mCallback, coords, zoom }) {
+export default function Map({ apiKey, center, callback, coords, zoom }) {
     // Define refs for Polygon instance and listeners
     let enveloped = [];
     const polyHash = useRef({});
@@ -89,39 +89,6 @@ export default function Map({ apiKey, center, callback, mCallback, coords, zoom 
 //    const [ markers, setMarkers] = useState([...coords.values()]);
     const [ drawMarker, setDrawMarker ] = useState(false);
 
-    const updateMarkers = (env) => {
-	return;
-	mCallback(env);
-	return;
-	/*
-	console.log(env);
-	for(const [k,v] of Object.entries(coords)){
-	    if(!env.includes(v.id)){
-		coords[k].polyselected = false;
-//		coords[k].visibility = false;
-	    }
-	    else{
-		coords[k].polyselected = true
-//		coords[k].visibility = true;
-	    }
-	}
-	console.log(coords);
-	mCallback("Gagagaga");
-	setMarkers([...coords.values()]);
-	*/
-    };
-/*
-    const toggleMarkers = () => {
-	setDrawMarker(()=>!drawMarker)	
-	if(drawMarker){
-	    for(const [k,v] of Object.entries(coords)){coords[k].visibility = true;}
-	    setMarkers(markers => [...coords.values()]);
-	    return;
-	}
-	for(const [k,v] of Object.entries(coords)){coords[k].visibility = false;}
-	setMarkers([...coords.values()]);
-    }
-*/
     const onPolygonComplete = React.useCallback(
 	function onPolygonComplete(poly) {
 	    const path = poly.getPath();
@@ -130,29 +97,24 @@ export default function Map({ apiKey, center, callback, mCallback, coords, zoom 
 		poly.setMap(null);
 		delete polyHash.current[poly.id];
 		enveloped = polygonsContain(polyHash.current,coords);
-		updateMarkers(enveloped);
 		callback(enveloped);
 	    });
 //	    poly.addListener("drag", function(){console.log("what a drag"); });
 	    path.addListener("set_at", function(){
 		enveloped = polygonsContain(polyHash.current,coords);
-		updateMarkers(enveloped);
 		callback(enveloped);
 	    });
 	    path.addListener("remove_at", function(){
 		enveloped = polygonsContain(polyHash.current,coords);
-		updateMarkers(enveloped);
 		callback(enveloped);
 	    });
 	    path.addListener("insert_at", function(){
 		enveloped = polygonsContain(polyHash.current,coords);
-		updateMarkers(enveloped);
 		callback(enveloped);
 	    });
 	    polyHash.current[polyid.toString()] = poly;
 	    polyidinc(polyid => polyid+1);
 	    enveloped = polygonsContain(polyHash.current,coords);
-	    updateMarkers(enveloped);
 	    callback(enveloped);
 	    return;
 	},

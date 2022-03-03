@@ -33,8 +33,6 @@ export default function App(){
     const updatePlaces = () =>{
 	let locs = [...Sets.select_tids(activeSets)].map(e => Sets.tid2loc[e]);
 	locs = [...new Set(locs)];
-	console.clear();
-	console.log(locs);
 	for(const [i,v] of Object.entries(c)){
 	    if(!locs.includes(v.id)){
 		v.selected = false;
@@ -55,11 +53,9 @@ export default function App(){
 	for(const [k,v] of Object.entries(c)){
 	    if(!d.includes(v.id)){
 		c[k].polyselected = false;
-//		coords[k].visibility = false;
 	    }
 	    else{
 		c[k].polyselected = true
-//		coords[k].visibility = true;
 	    }
 	}
 	cUpdate([...c.values()]);
@@ -68,11 +64,9 @@ export default function App(){
 	for(const [k,v] of Object.entries(c)){
 	    if(!d.includes(v.id)){
 		c[k].polyselected = false;
-//		coords[k].visibility = false;
 	    }
 	    else{
 		c[k].polyselected = true
-//		coords[k].visibility = true;
 	    }
 	}
 	console.log(d);
@@ -107,57 +101,17 @@ export default function App(){
 			discrete={(d) => discreteCallback(d)}
 		    />
 		</div>
-		{/*gmap(API_KEY,center,mapCallback,c,zoom, deselected)*/}
-		{
-// moved to function because it seems to re-render too much 	
 		<Map
 		    apiKey={API_KEY}
 		    center={center}
 		    callback={(d) => mapCallback(d)}
-//		    mCallback={(d) => markerCallback(d)}
 		    coords={c}
 		    zoom={zoom}
 		/>
-		 }
 	    </div>
 	);
 }
-function gmap(k,m,f,c,z,d){
-    return(
-	<Map
-	    apiKey={k}
-	    center={m}
-	    callback={(d) => f(d)}
-	    coords={c}
-	    zoom={z}
-//	    desel={d}
-	/>
-    );
-}
-
 /* Some auxfuns */
-
-function initActiveSets(data){ // No longer in use
-    console.log(data);
-    data.forEach(
-	function(d){
-	    if(d.type == "discrete"){
-		d.val.forEach(
-		    function(v){
-			Sets.add_set(d.key,v);
-		    }
-		);
-	    }
-	    if(d.type == "interval"){
-		console.log(d);
-		if(d.nulls){
-		    Sets.add_set(d.key,null);
-		}
-		Sets.interval_add_set(d.key,d.val.min,d.val.max);
-	    }
-	}
-    );
-}
 
 function initMenuData(meta){
     // meta = cat -> val -> Set of tids
@@ -180,7 +134,7 @@ function initMenuData(meta){
     return menu_data;
 }
 function getInterval(arr){
-    let min = 999999;
+    let min = 99999999;
     let max = 0;
     var nulls = false;
     arr.forEach(
