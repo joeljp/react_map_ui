@@ -95,11 +95,13 @@ export default function App(){
 		    </button>
 		</div>
 		<div className="inner-grid">
-		    <Menu
-			meta={menu_data}
-			interval={(d) => intervalCallback(d)} 
-			discrete={(d) => discreteCallback(d)}
-		    />
+		    <div className="divTableBody">
+			<Menu
+			    meta={menu_data}
+			    interval={(d) => intervalCallback(d)} 
+			    discrete={(d) => discreteCallback(d)}
+			/>
+		    </div>
 		</div>
 		<Map
 		    apiKey={API_KEY}

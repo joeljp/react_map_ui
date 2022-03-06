@@ -23,7 +23,7 @@
 #inner-grid {
     background:black;
     display: grid;
-/*    border: 1px solid white; */
+    /*    border: 1px solid white; */
     padding: 3px;
     grid-template-columns: 18% 20% 1fr 10%;
     grid-auto-rows: minmax(min-content, max-content);
@@ -40,5 +40,38 @@
     font-size: 1vw;
 }
 .nulls{
-    float:right;
+    padding-right: 10px;
+    background: red;
+    color: white;
+    float:left;
+}
+.divTable{
+    display: table;
+    width: 100%;
+}
+.divTableRow {
+    display: table-row;
+}
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+}
+.divTableCell, .divTableHead {
+    color:white;
+    border: 1px solid #999999;
+    display: table-cell;
+    padding: 3px 10px;
+}
+.divTableHeading {
+    background-color: #EEE;
+    display: table-header-group;
+    font-weight: bold;
+}
+.divTableFoot {
+    background-color: #EEE;
+    display: table-footer-group;
+    font-weight: bold;
+}
+.divTableBody {
+    display: table-row-group;
 }
