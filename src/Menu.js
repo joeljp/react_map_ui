@@ -68,11 +68,6 @@ export default function Menu(props){
 		    }
 		    checks.push(
 			check
-//			<Checkbox
-//			    key={k+"_"+i}
-//			    label={i}
-//			    onChange={(e) => props.discrete({cat: k,val: i,checked: e.target.checked})}
-//			/>
 		    );
 		}
 	    );

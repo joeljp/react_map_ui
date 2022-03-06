@@ -60,18 +60,6 @@ export default function App(){
 	}
 	cUpdate([...c.values()]);
     };
-    const markerCallback = (d) =>{
-	for(const [k,v] of Object.entries(c)){
-	    if(!d.includes(v.id)){
-		c[k].polyselected = false;
-	    }
-	    else{
-		c[k].polyselected = true
-	    }
-	}
-	console.log(d);
-	cUpdate([...c.values()]);
-    };
     const intervalCallback = (d) => {
 	aUpdate(Sets.interval_add_set(d[0],d[1],d[2], activeSets));
 	updatePlaces();
