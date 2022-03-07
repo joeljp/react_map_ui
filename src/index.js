@@ -30,8 +30,10 @@ export default function App(){
     a = Sets.initActiveSets(menu_data, a);
     const [activeSets, aUpdate] = useState(a);
     const [c, cUpdate] = useState(markers);
+    const [ntids, ntidsUpdate] = useState([...Sets.select_tids(activeSets)].length);
+    const [nlocs, nlocsUpdate] = useState(locs.length);
     const updatePlaces = () =>{
-	let locs = [...Sets.select_tids(activeSets)].map(e => Sets.tid2loc[e]);
+	let locs =  [...Sets.select_tids(activeSets)].map(e => Sets.tid2loc[e]);
 	locs = [...new Set(locs)];
 	for(const [i,v] of Object.entries(c)){
 	    if(!locs.includes(v.id)){
@@ -40,10 +42,13 @@ export default function App(){
 	    }
 	    v.selected = true;
 	}
+	ntidsUpdate([...Sets.select_tids(activeSets)].length);
+	nlocsUpdate(locs.length);
 	cUpdate([...c.values()]);
     };
 
     const mapCallback = (d) => {
+	console.log(d);
 	aUpdate(Sets.remove_active_set("place", activeSets));
 	d.forEach(
 	    function(e){
@@ -58,7 +63,9 @@ export default function App(){
 		c[k].polyselected = true
 	    }
 	}
+	ntidsUpdate([...Sets.select_tids(activeSets)].length);
 	cUpdate([...c.values()]);
+	updatePlaces();
     };
     const intervalCallback = (d) => {
 	aUpdate(Sets.interval_add_set(d[0],d[1],d[2], activeSets));
@@ -68,7 +75,7 @@ export default function App(){
 	d.checked ? aUpdate(Sets.add_set(d.cat,d.val,activeSets)) : aUpdate(Sets.rem_set(d.cat,d.val, activeSets));
 	updatePlaces();
     };
-    
+
     return (
 	    <div id="grid">
 		<div className="head" id="head">
@@ -81,6 +88,8 @@ export default function App(){
 		    <button onClick={() => console.log(activeSets["place"])}>
 			{"locs"}
 		    </button>
+		    <span>{ntids + " informants in "}</span>
+		    <span>{nlocs + " locations"}</span>
 		</div>
 		<div className="inner-grid">
 		    <div className="divTableBody">
