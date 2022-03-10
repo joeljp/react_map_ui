@@ -32,6 +32,9 @@ const options = {
 };
 
 const polygonsContain = (polygons,coords) => {
+    if(Object.keys(polygons).length == 0){
+	return coords.map((coord) => {return coord.id});
+    }
     let markers = [];
     for(var k in polygons){
 	markers = markers.concat(polygonContains(polygons[k],coords));

@@ -11,6 +11,9 @@ const Checkbox = (props) => {
 	</label>
     );
 };
+function ucfirst(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export default function Menu(props){
     let comps = [];
@@ -20,7 +23,7 @@ export default function Menu(props){
 	    let row = [];
 	    row.push(
 		<div className="divTableCell" key={"row_label"+j}>
-		    {e.key}
+		    {ucfirst(e.key)}
 		</div>
 	    );
 	    if(e.type == "interval"){

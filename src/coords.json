@@ -1,6 +1,7 @@
 {
     "focus":   [64, 3, 4],
-    "Vilhelmina": [64.92379165427583, 16.586251160048125, "this is in Sweden, but geographically the middle of Norway"],
+    "Vilhelmina": [64.92379165427583, 16.586251160048125, "(Vilhelmina) this is in Sweden, but geographically the middle of Norway"],
+    "CENTER": [64.92379165427583, 16.706251160048125],
     "Alta": [69.967781, 23.249722],
     "Alvdal": [62.123152, 10.632019],
     "Andenes": [69.3142668, 16.0663152],

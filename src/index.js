@@ -1,7 +1,6 @@
 import React, {useState, useRef} from "react";
 import ReactDOM from "react-dom";
 
-
 import "./layout.css";
 
 import {Sets} from './sets.js';
@@ -14,7 +13,8 @@ import coords from "./coords.json";
 import meta from "./meta.json";
 
 const API_KEY = config.API_KEY;
-const center = config.CENTER;
+//const center = config.CENTER;
+const center = {lat: coords.CENTER[0], lng: coords.CENTER[1]};
 const zoom = config.ZOOM;
 
 // This is a static class
@@ -48,7 +48,6 @@ export default function App(){
     };
 
     const mapCallback = (d) => {
-	console.log(d);
 	aUpdate(Sets.remove_active_set("place", activeSets));
 	d.forEach(
 	    function(e){
@@ -79,7 +78,7 @@ export default function App(){
     return (
 	    <div id="grid">
 		<div className="head" id="head">
-		    <button onClick={() => console.log(Sets.select_tids(activeSets))}>
+		    <button onClick={() => console.log([...Sets.select_tids(activeSets)])}>
 			{"tids"}
 		    </button>
 		    <button onClick={() => console.log(activeSets)}>

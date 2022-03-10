@@ -19,8 +19,6 @@ function difference(a,b){
 }
 export class Sets {
 
-    // activeSets hash taken out and static methods made functional
-
     static tid2loc = {};
     static SuperSet = {}; // SuperSet is a hash of hashes, where the innerhashes are key/set pairs. The sets are simply tids, on which set operations can be performed.
 
